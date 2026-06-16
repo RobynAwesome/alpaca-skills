@@ -1,9 +1,9 @@
 # Default owner for root docs and unmatched paths
-*                       @idsts2670
+*                       @olavado @sai-g @ggrace01
 
-/skills/trading-api/    @idsts2670
-/skills/broker-api/     @idsts2670
+/skills/trading-api/    @olavado @sai-g @ggrace01
+/skills/broker-api/     @olavado @sai-g @ggrace01
 
 # Repo infrastructure
-/.github/               @idsts2670
-/scripts/               @idsts2670
+/.github/               @olavado @sai-g @ggrace01
+/scripts/               @olavado @sai-g @ggrace01
