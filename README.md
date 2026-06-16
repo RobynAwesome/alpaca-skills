@@ -39,7 +39,7 @@ cp -r path/to/alpaca-skills/skills/trading-api/backtest .cursor/skills/alpaca-tr
 | --- | --- | --- |
 | `alpaca-trading-backtest` | [skills/trading-api/backtest/](skills/trading-api/backtest/) | Trading API Backtesting |
 
-Product namespacing uses the folder path (`skills/trading-api/`, `skills/broker-api/`) and the skill `name` field in frontmatter.
+Product namespacing uses the folder path (`skills/trading-api/`, `skills/broker-api/`) and the skill `name` field: `alpaca-<product-scope>-<skill-name>` (e.g. `alpaca-trading-backtest`). Use `trading` or `broker` as the product scope — not `api`.
 
 ## Related resources
 

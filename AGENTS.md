@@ -9,8 +9,6 @@ Conventions for authoring and maintaining skills in this repository.
 | `skills/trading-api/` | Trading API agent skills |
 | `skills/broker-api/` | Broker API agent skills |
 | `templates/skill/` | Contributor scaffold (`SKILL.md` + `reference.md`) |
-| `cookbooks/` | End-to-end examples (future) |
-| `guides/` | Setup and usage guides (future) |
 
 ## Skill structure
 
@@ -18,7 +16,8 @@ Conventions for authoring and maintaining skills in this repository.
 | --- | --- |
 | Layout | Skills live under `skills/<product>/<skill-name>/` |
 | Frontmatter | Required fields: `name`, `description` only |
-| Namespacing | Use product folder (`trading-api/`, `broker-api/`) and a prefixed `name` (e.g. `alpaca-trading-backtest`) |
+| Skill `name` | `alpaca-<product-scope>-<skill-name>` (e.g. `alpaca-trading-backtest`). `<product-scope>` is `trading` or `broker` — do not include `api` in the name |
+| Folder path | Use `skills/trading-api/` or `skills/broker-api/` for product grouping |
 | File pairing | Every skill has `SKILL.md` (workflow) + `reference.md` (schemas, formulas, CLI detail) |
 | Cross-refs | Use relative paths (`reference.md`), not absolute install paths |
 | Secrets | Never commit API keys; prefer env vars (`ALPACA_API_KEY`, `ALPACA_SECRET_KEY`) |
@@ -27,7 +26,7 @@ Conventions for authoring and maintaining skills in this repository.
 ## Adding a skill
 
 1. Copy `templates/skill/` into the appropriate product folder.
-2. Choose a unique prefixed `name` within that product folder.
+2. Set `name` to `alpaca-<product-scope>-<skill-name>` (unique within that product folder).
 3. Write workflow and guardrails in `SKILL.md`; put formulas, schemas, and CLI reference in `reference.md`.
 4. Open a pull request. A maintainer will review before merge.
 

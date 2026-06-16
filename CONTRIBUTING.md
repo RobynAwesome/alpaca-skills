@@ -6,13 +6,13 @@ Thank you for contributing to Alpaca Skills. This repository is open to improvem
 
 - **New skills** — workflow packages for Trading API or Broker API tasks
 - **Improvements** — clearer instructions, better guardrails, broader CLI coverage
-- **Documentation** — README, guides, cookbooks
+- **Documentation** — README and skill docs
 
 ## Before you open a PR
 
 1. Read [AGENTS.md](AGENTS.md) for layout and frontmatter conventions.
 2. Pick a product folder: `skills/trading-api/` or `skills/broker-api/`.
-3. Choose a prefixed `name` (e.g. `alpaca-trading-my-skill`) unique within that folder.
+3. Choose a `name` following `alpaca-<product-scope>-<skill-name>` (e.g. `alpaca-trading-my-skill`). `<product-scope>` is `trading` or `broker`.
 4. Copy `templates/skill/` as your starting point.
 
 ## Skill requirements
