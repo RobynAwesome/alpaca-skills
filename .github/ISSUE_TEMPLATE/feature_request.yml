@@ -1,0 +1,48 @@
+name: Feature request
+description: Propose a new skill or improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem does this solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed skill or improvement
+    validations:
+      required: true
+
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product area
+      options:
+        - trading-api
+        - broker-api
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cli-mcp
+    attributes:
+      label: Needs CLI or MCP access?
+      options:
+        - Alpaca CLI only
+        - MCP server
+        - Neither / docs only
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional

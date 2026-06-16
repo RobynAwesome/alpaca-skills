@@ -1,0 +1,26 @@
+name: skill-check
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-skills:
+    name: Validate skills
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@4239362448deb12227f89fca423e33a2abecdb0 # v5.1.0
+        with:
+          python-version: "3.11"
+
+      - name: Run skill validator
+        run: python3 scripts/validate_skills.py

@@ -1,0 +1,82 @@
+name: Bug report
+description: Report a problem with an existing skill or repo tooling
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Not for security issues.** See [SECURITY.md](../../SECURITY.md) and report privately via [GitHub Security Advisories](https://github.com/alpacahq/alpaca-skills/security/advisories/new).
+
+  - type: input
+    id: skill
+    attributes:
+      label: Skill path or name
+      description: e.g. `skills/trading-api/backtest/` or `alpaca-trading-backtest`
+      placeholder: skills/trading-api/backtest/
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15, Ubuntu 24.04, etc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent / IDE
+      options:
+        - Cursor
+        - Claude Code
+        - VS Code Copilot
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: cli-version
+    attributes:
+      label: Alpaca CLI version (if relevant)
+      placeholder: Run `alpaca version`
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Optional

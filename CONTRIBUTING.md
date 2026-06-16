@@ -14,6 +14,9 @@ Thank you for contributing to Alpaca Skills. This repository is open to improvem
 2. Pick a product folder: `skills/trading-api/` or `skills/broker-api/`.
 3. Choose a `name` following `alpaca-<product-scope>-<skill-name>` (e.g. `alpaca-trading-my-skill`). `<product-scope>` is `trading` or `broker`.
 4. Copy `templates/skill/` as your starting point.
+5. Run `python3 scripts/validate_skills.py` locally before pushing.
+
+For security issues, see [SECURITY.md](SECURITY.md). This project is licensed under the [Apache License 2.0](LICENSE).
 
 ## Skill requirements
 
@@ -38,7 +41,8 @@ Maintainers check for:
 
 1. Fork the repository and create a feature branch.
 2. Make your changes and self-review against [AGENTS.md](AGENTS.md).
-3. Open a PR with a short summary and test plan.
-4. A maintainer will review and merge or request changes.
+3. Use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md) when opening a PR.
+4. Ensure `python3 scripts/validate_skills.py` passes (also enforced by the `skill-check` CI workflow).
+5. A maintainer will review and merge or request changes.
 
 Questions? Open a discussion or issue on GitHub.
