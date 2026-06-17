@@ -1,2 +1,9 @@
-# Trading API skills
-/skills/trading-api/    @idsts2670
+# Default owner for root docs and unmatched paths
+*                       @olavado @sai-g @ggrace01
+
+/skills/trading-api/    @olavado @sai-g @ggrace01
+/skills/broker-api/     @olavado @sai-g @ggrace01
+
+# Repo infrastructure
+/.github/               @olavado @sai-g @ggrace01
+/scripts/               @olavado @sai-g @ggrace01

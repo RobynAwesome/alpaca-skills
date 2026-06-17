@@ -30,4 +30,8 @@ Conventions for authoring and maintaining skills in this repository.
 3. Write workflow and guardrails in `SKILL.md`; put formulas, schemas, and CLI reference in `reference.md`.
 4. Open a pull request. A maintainer will review before merge.
 
+## Continuous integration
+
+Pull requests to `main` run `scripts/validate_skills.py` via the `skill-check` GitHub Actions workflow. Fix any reported file and rule before requesting review.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
