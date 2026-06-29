@@ -18,7 +18,26 @@ Skills provide shared instructions, guardrails, and reporting standards so agent
 
 ## Install
 
-Point your agent at a skill directory, or copy it into your agent's skills folder.
+### Recommended: Skills CLI
+
+Use the Skills CLI to install from this GitHub repository:
+
+```bash
+# Interactive install
+npx skills add alpacahq/alpaca-skills
+
+# Preview available skills
+npx skills add alpacahq/alpaca-skills --list
+
+# Install one specific skill
+npx skills add alpacahq/alpaca-skills --skill alpaca-trading-backtest
+```
+
+Swap in any skill name from the table below.
+
+### Manual install
+
+For agents that do not support the Skills CLI, point your agent at a skill directory, or copy/symlink it into your agent's skills folder.
 
 | Agent | Typical path |
 | --- | --- |
