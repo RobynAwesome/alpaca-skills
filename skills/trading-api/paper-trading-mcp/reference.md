@@ -40,7 +40,9 @@ Do not carry V1 tool knowledge into V2. V2 is a rewrite, and a tool name can be 
 
 An account response alone does not prove the server is using paper. Before every submission, require trusted server configuration or tool metadata showing paper mode, then verify that the account is active and not blocked.
 
-Stop if paper mode cannot be proven. Do not fall back to CLI, SDK, or REST calls.
+The paper flag is readable only from the client's MCP configuration, which also holds the API credentials in the same `env` block. Extract that single field; never read, print, or echo the file or the server entry as a whole. Treat an absent flag as paper, because the server defaults to it, but treat an unidentifiable server entry or an unparsable config as inconclusive rather than absent — the two look identical in a naive read and only one of them passes.
+
+Stop if paper mode cannot be proven. Do not fall back to CLI, SDK, or REST calls for Alpaca data; reading the local config for this gate reaches no Alpaca endpoint and is not that fallback.
 
 ## MCP execution rules
 

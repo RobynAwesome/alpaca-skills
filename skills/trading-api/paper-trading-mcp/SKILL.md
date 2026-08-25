@@ -226,13 +226,33 @@ Paper mode itself is established by the server's `ALPACA_PAPER_TRADE` setting, n
 
 **Step 12** — **STOP gate**: prove paper mode from the MCP client config, then stop if you cannot.
 
-The MCP server does **not** expose `ALPACA_PAPER_TRADE` to your agent. There is no tool, resource, or server-instruction field that reports it, so the agent cannot ask the server which mode it is in. The only place that value is readable is the client's own MCP configuration file. Your agent:
+The MCP server does **not** expose `ALPACA_PAPER_TRADE` to your agent. There is no tool, resource, or server-instruction field that reports it, so the agent cannot ask the server which mode it is in. The only place that value is readable is the client's own MCP configuration file.
 
-1. Reads the host's MCP config — `~/.cursor/mcp.json` for Cursor, or the equivalent for the host in use.
-2. Locates the server entry backing the namespace it discovered its Alpaca tools from.
-3. Requires `env.ALPACA_PAPER_TRADE` to be absent, or set to `true`, `1`, or `yes` (case-insensitive). The server lowercases the value and tests membership in exactly that set, so **any other value selects live** — including `paper`, `TRUE ` with a trailing space, and `yes!`.
+That file also holds `ALPACA_API_KEY` and `ALPACA_SECRET_KEY` in the same `env` block, so your agent **must not read the file as a whole** — no `cat`, no file-read tool, no printing the server entry. Reading it wholesale would pull the credentials into model context and violate the data-handling guarantee in §8. The gate needs exactly one value, so it extracts exactly that one value:
 
-If the config cannot be read, the server entry cannot be identified, or the value is anything outside that set, the gate **fails closed**. Your agent stops and tells you:
+```bash
+# 1. List server names (names are not secrets)
+jq -r '.mcpServers | keys[]' ~/.cursor/mcp.json
+
+# 2. Confirm the chosen entry exists, then read only the flag
+jq -r '.mcpServers | has("<server-name>")' ~/.cursor/mcp.json
+jq -r '.mcpServers["<server-name>"].env.ALPACA_PAPER_TRADE // "unset"' ~/.cursor/mcp.json
+```
+
+On a host without `jq`, the equivalent single-value read:
+
+```bash
+python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));e=d["mcpServers"][sys.argv[2]].get("env") or {};print(e.get("ALPACA_PAPER_TRADE","unset"))' ~/.cursor/mcp.json '<server-name>'
+```
+
+Substitute the host's own config path when it is not Cursor. Your agent then:
+
+1. Identifies the server entry backing the namespace it discovered its Alpaca tools from, and confirms that entry exists — step 2 above.
+2. Requires the flag to be `unset`, or set to `true`, `1`, or `yes` (case-insensitive). The server lowercases the value and tests membership in exactly that set, so **any other value selects live** — including `paper`, `TRUE ` with a trailing space, and `yes!`.
+
+Distinguish the two ways a read comes back empty, because they are not equivalent. A confirmed entry whose flag is `unset` **passes** — the server defaults to paper when the variable is absent. An entry that cannot be found, or a config that cannot be parsed, is an **inconclusive** read, not a passing one, and the value printed for it is indistinguishable from a genuinely absent flag. Never let the second case be read as the first.
+
+If the config cannot be read or parsed, the server entry cannot be identified, or the value is anything outside that set, the gate **fails closed**. Your agent stops and tells you:
 
 > "⚠️ I cannot confirm this MCP server is in paper mode. This skill only supports paper trading. Check that `ALPACA_PAPER_TRADE` is `true` in the server's `env` block and that the configured keys are paper keys, then restart the client."
 
@@ -540,7 +560,7 @@ If you ask about automating these trades beyond interactive sessions:
 
 11. **Always discover tools first.** Call `GetDynamicTools` to find the Alpaca namespace and inspect tool schemas before calling any tool. Tool names cited in this skill are current for v2 and are documentation, not a contract — v2 was a rewrite in which none of the v1 tools survived, and a name can persist across versions while its schema changes. Confirm against discovery and never hard-code a parameter schema.
 12. **Handle namespace states.** If the MCP namespace is `"needsAuth"`, authenticate via `mcp_auth`. If `"error"` or not found, tell you to check the MCP server configuration.
-13. **No raw HTTP fallback.** This is the MCP version — do not fall back to direct HTTP API calls or CLI commands if the MCP server is available and functioning.
+13. **No raw HTTP fallback.** This is the MCP version — do not fall back to direct HTTP API calls or CLI commands if the MCP server is available and functioning. This governs how your agent reaches Alpaca. It does not forbid reading the local MCP config for the Step 12 paper gate, which touches no Alpaca endpoint.
 14. **Auth errors are not retryable with different credentials.** If an MCP tool call fails with an authentication error, tell you to check the MCP server configuration. Do not retry with different credentials or attempt to pass API keys as tool arguments.
 15. **MCP tool calls do not need `required_permissions: ["all"]`.** They run through the MCP protocol, not the shell.
 16. **Respect MCP server boundaries.** If the discovered schema does not include a parameter you expect (e.g., `position_intent` for options), do not invent it — tell you and reference the API docs for workarounds.
@@ -698,7 +718,8 @@ Your agent must include these disclosures:
 
 ### Data handling
 
-- MCP tool calls go through the MCP protocol to the Alpaca API. Your agent does not see or store API credentials.
+- MCP tool calls go through the MCP protocol to the Alpaca API. Credentials live in the server's configuration and are never passed as tool arguments, so tool calls never place them in your agent's context.
+- The one point where your agent touches the file holding those credentials is the Step 12 paper gate. It reads a single field from that file and must never read, print, or echo the file or the server entry as a whole. If your agent cannot extract just that field, it fails the gate rather than falling back to a wholesale read.
 - Order data is saved locally in the run folder structure (see §6).
 - No trading data is sent to third-party services beyond Alpaca.
 - Your agent's conversation context may include order details — treat chat history accordingly.
@@ -710,6 +731,8 @@ Your agent must include these disclosures:
 - **NEVER** call a tool named in this skill without confirming it against discovery — the names are documented for v2, not guaranteed.
 - **NEVER** call MCP tools without first inspecting their schema via `GetDynamicTools`.
 - **NEVER** assume the MCP server is configured for paper, and never treat an account response as proof of it — paper mode comes from `ALPACA_PAPER_TRADE`.
+- **NEVER** read the MCP config file wholesale to check that flag — the same `env` block holds the API keys. Extract the single field.
+- **NEVER** treat an unidentifiable server entry as an absent flag — absent passes, inconclusive fails closed.
 - **NEVER** fall back to direct HTTP calls if the MCP server is available. This is the MCP version.
 - **NEVER** pass API keys as MCP tool arguments — the server handles auth internally.
 - **NEVER** place live trades or continue if the account appears to be live.
