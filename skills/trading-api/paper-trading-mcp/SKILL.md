@@ -533,8 +533,10 @@ If you ask about automating these trades beyond interactive sessions:
 - Cloud functions (AWS Lambda, GCP Cloud Functions) for event-driven trading
 - Webhook-based triggers from TradingView or custom signal providers
 
+Standalone automation leaves this skill's guarantees behind. The Step 12 paper gate covers MCP tool calls in an interactive session; an SDK script running under cron, a cloud function, or a webhook has no MCP server and no gate. The script must assert paper itself, at startup, and exit if it cannot — construct the client with `paper=True` as a literal rather than reading the endpoint from configuration, and abort if a live endpoint or live-trading flag is present in the environment. A live account returns the same response shape as a paper one, so nothing later in the run will surface the error.
+
 **Always**:
-- Use paper trading first for any new automation
+- Validate any new automation against paper for a meaningful period before considering live at all
 - Implement circuit breakers (max daily loss, max orders per day, max position size)
 - Log all orders and monitor for unexpected behavior
 - Your agent does not recommend specific cloud providers or infrastructure choices

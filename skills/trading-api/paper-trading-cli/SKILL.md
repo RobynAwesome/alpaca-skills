@@ -615,13 +615,24 @@ Cron runs with a near-empty environment and does not source your shell profile, 
 
 **systemd timer / launchd plist:** Your agent generates the appropriate service file for your OS, pointing it at the same wrapper.
 
-**CI/CD pipeline:** Install CLI in the pipeline, authenticate via environment variables, run orders as steps.
+**CI/CD pipeline.** Install the CLI, authenticate from the runner's secret store, and invoke the same wrapper — never `alpaca order submit` as a bare step:
+
+```yaml
+- name: Submit paper order
+  env:
+    ALPACA_API_KEY: ${{ secrets.ALPACA_PAPER_API_KEY }}
+    ALPACA_SECRET_KEY: ${{ secrets.ALPACA_PAPER_SECRET_KEY }}
+    ALPACA_PROFILE: paper
+  run: ./scripts/paper-trade.sh AAPL buy 1
+```
+
+CI is the easiest place to end up live by accident: the runner has no profile of yours, the keys come from whichever secret someone wired up, and a live key in a secret named for paper looks identical to a correct one at the call site. Naming the secret `PAPER` proves nothing, which is why the wrapper's `alpaca doctor` check — not the variable names — is what establishes the endpoint.
 
 **Key automation notes:**
 - The CLI never prompts. There are no "are you sure?" dialogs to suppress, in automation or interactively — which is exactly why the confirmation gates in this skill are the agent's responsibility, not the CLI's.
 - `--quiet` suppresses warnings, hints, and color. It is not what makes output machine-readable; JSON is the default with or without it. Use it in cron and CI to keep logs clean.
 - `ALPACA_OUTPUT=json|csv` sets the default output format for a whole script.
-- Always include the paper-endpoint verification above in automated scripts.
+- Every unattended path — cron, systemd, launchd, CI — submits through the guarded wrapper. No scheduler or pipeline calls `alpaca order submit` directly, so the endpoint check cannot be skipped by adding a new trigger.
 - Log all output for an audit trail.
 - Use `--client-order-id` for idempotency in retry scenarios.
 

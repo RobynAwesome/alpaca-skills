@@ -537,8 +537,17 @@ If you ask how to deploy or automate the strategy, your agent outlines these pat
 - TradingView alerts → webhook endpoint → your server → Alpaca API
 - Custom alert system → webhook → order execution logic
 
+**Every deployed path asserts paper at startup.** Scheduling, hosting, and webhook triggers differ, but they share one requirement: the artifact that runs unattended proves it is pointed at paper before it can place an order, and exits if it cannot. There is no operator watching to catch a wrong endpoint, and a live account returns the same response shape as a paper one, so nothing downstream will reveal the mistake.
+
+Two rules make that assertion trustworthy:
+
+- **Pin the paper endpoint as a literal in code, not as configuration.** An endpoint read from an environment variable, a config file, or a CI secret can be changed by someone who never reads this skill. In `alpaca-py` that means constructing the client as `TradingClient(key, secret, paper=True)` with `paper=True` written literally, never `paper=os.getenv(...)`.
+- **Abort on any signal that live was intended.** If a live endpoint, a live-trading flag, or a live profile is present in the environment, exit non-zero before the first order rather than resolving the conflict silently.
+
+Naming a credential or variable "paper" is not evidence. Only the resolved endpoint is.
+
 **Important notes your agent always includes:**
-- All automation should use paper trading first for validation before considering live
+- Validate any new automation against paper for a meaningful period before considering live at all
 - Your agent does not recommend any specific hosting provider or guarantee uptime
 - Automating live trading is a separate, significant decision with additional regulatory and risk considerations
 - Monitor automated systems regularly — do not "set and forget"
