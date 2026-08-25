@@ -575,15 +575,11 @@ Your agent reports the new order ID and updated parameters.
 
 When you ask about automation, your agent provides guidance for:
 
-**Cron job:**
-```bash
-# /etc/cron.d/paper-trade
-0 9 * * 1-5 /usr/local/bin/alpaca order submit --symbol AAPL --side buy --qty 1 --type market --time-in-force day --quiet >> /var/log/paper-trades.log 2>&1
-```
+**Bash script wrapper.** Unattended submission goes through a wrapper that proves the paper endpoint before it orders. Nothing scheduled calls `alpaca order submit` directly, so the guard cannot be bypassed by whichever scheduler invokes it:
 
-**Bash script wrapper:**
 ```bash
 #!/bin/bash
+# /usr/local/bin/paper-trade.sh
 set -euo pipefail
 
 SYMBOL="${1:?usage: $0 SYMBOL SIDE QTY}"
@@ -605,7 +601,19 @@ alpaca order submit \
   --client-order-id "$(uuidgen)"
 ```
 
-**systemd timer / launchd plist:** Your agent generates the appropriate service file for your OS.
+**Cron job.** Cron calls the wrapper, never the raw CLI:
+
+```bash
+# /etc/cron.d/paper-trade
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+ALPACA_PROFILE=paper
+0 9 * * 1-5 root /usr/local/bin/paper-trade.sh AAPL buy 1 >> /var/log/paper-trades.log 2>&1
+```
+
+Cron runs with a near-empty environment and does not source your shell profile, so `PATH`, `ALPACA_PROFILE`, and credentials must be set explicitly — in the crontab as above, or sourced inside the wrapper from a file readable only by the job's user. A scheduled job that inherits nothing is the case where an unguarded submit is most dangerous: there is no operator watching and no prompt, which is why the endpoint check belongs in the script rather than in the schedule.
+
+**systemd timer / launchd plist:** Your agent generates the appropriate service file for your OS, pointing it at the same wrapper.
 
 **CI/CD pipeline:** Install CLI in the pipeline, authenticate via environment variables, run orders as steps.
 
