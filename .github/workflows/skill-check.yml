@@ -24,3 +24,6 @@ jobs:
 
       - name: Run skill validator
         run: python3 scripts/validate_skills.py
+
+      - name: Run paper options agent tests
+        run: python3 examples/paper-options-agent/test_agent.py
