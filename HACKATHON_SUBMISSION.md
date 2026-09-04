@@ -12,7 +12,7 @@ submitting; do not replace a pending item with an invented URL or account ID.
 
 | Submission item | Evidence |
 |---|---|
-| Public repository | `https://github.com/RobynAwesome/alpaca-skills` |
+| Public repository | **PENDING — owner adds the final public repository URL** |
 | Runnable demo instructions | [`examples/paper-options-agent/README.md`](examples/paper-options-agent/README.md) |
 | Paper account ID | **PENDING — owner adds a redacted identifier after account setup** |
 | Live demo URL | **PENDING — add a working public URL if the submission requires one** |

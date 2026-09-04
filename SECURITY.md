@@ -12,7 +12,7 @@ This repository does not publish semver releases yet. Security fixes land on `ma
 
 **Do not open public GitHub issues for security vulnerabilities.**
 
-Preferred channel: [GitHub Security Advisories](https://github.com/RobynAwesome/alpaca-skills/security/advisories/new) (private).
+Preferred channel: [GitHub Security Advisories](https://github.com/alpacahq/alpaca-skills/security/advisories/new) (private).
 
 Alternate: email **security@alpaca.markets** with:
 

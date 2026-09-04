@@ -24,13 +24,13 @@ Use the Skills CLI to install from this GitHub repository:
 
 ```bash
 # Interactive install
-npx skills add RobynAwesome/alpaca-skills
+npx skills add alpacahq/alpaca-skills
 
 # Preview available skills
-npx skills add RobynAwesome/alpaca-skills --list
+npx skills add alpacahq/alpaca-skills --list
 
 # Install one specific skill
-npx skills add RobynAwesome/alpaca-skills --skill alpaca-trading-backtest
+npx skills add alpacahq/alpaca-skills --skill alpaca-trading-backtest
 ```
 
 Swap in any skill name from the table below.

@@ -9,19 +9,19 @@ Start with [`alpaca-broker-integration`](integration/) for base URLs, auth, API-
 List available skills with the Skills CLI:
 
 ```bash
-npx skills add RobynAwesome/alpaca-skills --list
+npx skills add alpacahq/alpaca-skills --list
 ```
 
 Install a single broker skill:
 
 ```bash
-npx skills add RobynAwesome/alpaca-skills --skill alpaca-broker-integration
+npx skills add alpacahq/alpaca-skills --skill alpaca-broker-integration
 ```
 
 Install the full repo into Cursor globally:
 
 ```bash
-npx skills add RobynAwesome/alpaca-skills --skill '*' -g -a cursor -y
+npx skills add alpacahq/alpaca-skills --skill '*' -g -a cursor -y
 ```
 
 For local development from this checkout, use the local path:
